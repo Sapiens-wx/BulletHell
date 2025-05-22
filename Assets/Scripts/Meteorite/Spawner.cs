@@ -24,6 +24,8 @@ public class Spawner : Singleton<Spawner>{
         spawnedEnemy.transform.position=new Vector3(enemyOnTheLeft?-spawnX:spawnX,screenHeight/2,0);
         spawnedEnemy.Init();
         onSpawn?.Invoke();
+        //send message to predict.py
+        Communicator.inst.SendMessage(new byte[]{(byte)(enemyOnTheLeft?0:1)});
     }
     public void OnEnemyDefeated(bool success){
         onEnemyDefeated?.Invoke(success);
@@ -31,6 +33,8 @@ public class Spawner : Singleton<Spawner>{
             GameManager.inst.EndGame();
         else
             StartCoroutine(RespawnEnemy());
+        //send message to predict.py
+        Communicator.inst.SendMessage(new byte[]{2});
     }
     IEnumerator RespawnEnemy(){
         yield return new WaitForSeconds(GameManager.inst.restInterval);
