@@ -19,9 +19,9 @@ namespace HideNSeek{
             eyeOriginalPosY=eyes.localPosition.y;
             inputX=0;
             yScale=1;
-            xspd=Time.fixedDeltaTime*GameManager.inst.boundX/walkDuration;
-            GameManager.inst.onRoundEnd+=(success)=>{transform.position=Vector3.zero; inputX=0; isAtRest=true;};
-            GameManager.inst.onRoundBegin+=(time,dir)=>{isAtRest=false;};
+            xspd=Time.fixedDeltaTime*HideAndSeekManager.inst.boundX/walkDuration;
+            HideAndSeekManager.inst.onRoundEnd+=(success)=>{transform.position=Vector3.zero; inputX=0; isAtRest=true;};
+            HideAndSeekManager.inst.onRoundBegin+=(time,dir)=>{isAtRest=false;};
         }
 
         void FixedUpdate()
@@ -30,11 +30,11 @@ namespace HideNSeek{
                 int key=(int)Input.GetAxisRaw("Horizontal");
                 if(key!=0) inputX=key;
                 //if the player direction is not the same as the kid's direction
-                if(GameManager.inst.onTheLeft!=(inputX<=0))
+                if(HideAndSeekManager.inst.onTheLeft!=(inputX<=0))
                     inputX=0;
-                if(inputX>0&&transform.position.x<=GameManager.inst.boundX)
+                if(inputX>0&&transform.position.x<=HideAndSeekManager.inst.boundX)
                     transform.position+=new Vector3(xspd,0,0);
-                else if(inputX<0&&transform.position.x>=-GameManager.inst.boundX)
+                else if(inputX<0&&transform.position.x>=-HideAndSeekManager.inst.boundX)
                     transform.position+=new Vector3(-xspd,0,0);
             }
             //animate player

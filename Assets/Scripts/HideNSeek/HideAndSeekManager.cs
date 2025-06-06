@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace HideNSeek{
-    public class GameManager : Singleton<GameManager>
+    public class HideAndSeekManager : Singleton<HideAndSeekManager>
     {
         public Animator leftKid, rightKid;
         public float boundX;
@@ -67,7 +67,7 @@ namespace HideNSeek{
             OnRoundEnd(false);
         }
         IEnumerator Reappear(){
-            yield return new WaitForSeconds(GameManager.inst.restInterval);
+            yield return new WaitForSeconds(HideAndSeekManager.inst.restInterval);
             Appear();
         }
     }
