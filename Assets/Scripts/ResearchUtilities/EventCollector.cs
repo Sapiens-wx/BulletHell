@@ -74,17 +74,6 @@ namespace ResearchUtilities
 #endif
         }
 
-        private void Start()
-        {
-            // 测试：添加几条日志并导出
-            RecordEvent("TestEvent", "log1", "value1");
-            RecordEvent("TestEvent", "log2", "value2");
-            RecordEvent("TestEvent", "log3", "value3");
-            RecordEvent("AnotherEvent", "foo", "bar");
-            RecordEvent("AnotherEvent", "baz", "qux");
-            CollectAllEventLogsToFile();
-        }
-
         public void CollectEventLogsToFile(string eventName)
         {
             if (!_eventLogs.ContainsKey(eventName))
