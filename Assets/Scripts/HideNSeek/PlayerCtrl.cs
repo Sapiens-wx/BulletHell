@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace HideNSeek{
@@ -10,18 +11,21 @@ namespace HideNSeek{
 
         bool isAtRest;
         int inputX;
-        float xspd;
+        float delta_x, moveSpd;
         float yScale,prevX,eyeOriginalPosY;
         const float maxXSpd=5;
+        [NonSerialized][HideInInspector]public float vx;
+        public float MoveSpd=>moveSpd;
         // Start is called before the first frame update
         void Start()
         {
             eyeOriginalPosY=eyes.localPosition.y;
             inputX=0;
             yScale=1;
-            xspd=Time.fixedDeltaTime*HideAndSeekManager.inst.boundX/walkDuration;
-            HideAndSeekManager.inst.onRoundEnd+=(success)=>{transform.position=Vector3.zero; inputX=0; isAtRest=true;};
-            HideAndSeekManager.inst.onRoundBegin+=(time,dir)=>{isAtRest=false;};
+            moveSpd=GameManager.inst.boundX/walkDuration;
+            delta_x=Time.fixedDeltaTime*moveSpd;
+            GameManager.inst.onRoundEnd+=(success)=>{transform.position=Vector3.zero; inputX=0; isAtRest=true;};
+            GameManager.inst.onRoundBegin+=(time,dir)=>{isAtRest=false;};
         }
 
         void FixedUpdate()
@@ -30,18 +34,18 @@ namespace HideNSeek{
                 int key=(int)Input.GetAxisRaw("Horizontal");
                 if(key!=0) inputX=key;
                 //if the player direction is not the same as the kid's direction
-                if(HideAndSeekManager.inst.onTheLeft!=(inputX<=0))
+                if(GameManager.inst.onTheLeft!=(inputX<=0))
                     inputX=0;
-                if(inputX>0&&transform.position.x<=HideAndSeekManager.inst.boundX)
-                    transform.position+=new Vector3(xspd,0,0);
-                else if(inputX<0&&transform.position.x>=-HideAndSeekManager.inst.boundX)
-                    transform.position+=new Vector3(-xspd,0,0);
+                if(inputX>0&&transform.position.x<=GameManager.inst.boundX)
+                    transform.position+=new Vector3(delta_x,0,0);
+                else if(inputX<0&&transform.position.x>=-GameManager.inst.boundX)
+                    transform.position+=new Vector3(-delta_x,0,0);
             }
             //animate player
             float x=transform.position.x;
-            float v=Mathf.Abs(x-prevX)/Time.fixedDeltaTime;
-            if(isAtRest) v=0;
-            yScale=Mathf.Lerp(yScale,1-v/maxXSpd*maxShrinkYScale,.1f);
+            vx=Mathf.Abs(x-prevX)/Time.fixedDeltaTime;
+            if(isAtRest) vx=0;
+            yScale=Mathf.Lerp(yScale,1-vx/maxXSpd*maxShrinkYScale,.1f);
             float yOffset=(yScale-1)*.5f;
             Vector3 pos=spr.transform.localPosition, scale=spr.transform.localScale;
             pos.y=yOffset;
