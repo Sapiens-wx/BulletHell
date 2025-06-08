@@ -18,8 +18,9 @@ namespace Games.Rhythm_Game
         [SerializeField] public RhythmGameDetector leftDetector, rightDetector;
         public float BPM => bpm;
         public float BeatsPerMove => beatsPerMove;
-        private float _secondPerMove => beatsPerMove / bpm * 60f;
+        public float SecondPerMove => beatsPerMove / bpm * 60f;
         private float _moveCounter;
+
 
         private void Update()
         {
@@ -27,9 +28,9 @@ namespace Games.Rhythm_Game
                 MoveDown();
             
             _moveCounter += Time.deltaTime;
-            if (_moveCounter >= _secondPerMove)
+            if (_moveCounter >= SecondPerMove)
             {
-                _moveCounter -= _secondPerMove;
+                _moveCounter -= SecondPerMove;
                 MoveDown();
             }
             
@@ -50,10 +51,22 @@ namespace Games.Rhythm_Game
         {
             if (_isMoving)
                 return;
+            
+            
+            if (leftDetector._currentNote != null)
+                RhythmGameManager.Instance.OnNoteNotFulfilled(NoteType.Left);
+            if (rightDetector._currentNote != null)
+                RhythmGameManager.Instance.OnNoteNotFulfilled(NoteType.Right);
+            
+            leftDetector.ClearCurrentNote();
+            rightDetector.ClearCurrentNote();
+            
             _isMoving = true;
             _moveProgress = 0f;
             leftDetector.timeAccumulation = 0;
             rightDetector.timeAccumulation = 0;
+            
+                
         }
 
         public void AccumulateControlInput(NoteType noteType, float deltaTime)
@@ -67,8 +80,15 @@ namespace Games.Rhythm_Game
             if (!detector._currentNote)
                 return;
             detector.timeAccumulation += deltaTime;
-            if (detector.timeAccumulation >= _secondPerMove * RhythmGameManager.Instance.CorrectNoteThreshold)
-                Destroy(detector._currentNote.gameObject);
+            if (detector.timeAccumulation >= SecondPerMove * RhythmGameManager.Instance.CorrectNoteThreshold)
+                OnNoteInputFulfilled(detector);
+        }
+
+        private void OnNoteInputFulfilled(RhythmGameDetector detector)
+        {
+            RhythmGameManager.Instance.OnNoteFulfilled(detector._currentNote.Type);
+            Destroy(detector._currentNote.gameObject);
+            detector.ClearCurrentNote();
         }
     }
 }

@@ -3,6 +3,8 @@
     public enum NoteType
     {
         Left,
-        Right
+        Right,
+        Terminator,
+        None
     }
 }

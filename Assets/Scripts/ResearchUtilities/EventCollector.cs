@@ -35,7 +35,7 @@ namespace ResearchUtilities
         private string FilePath => _filePathSet ? _logFilePath : DefaultLogFolderPath;
         private string _logFilePath;
 
-        private static Dictionary<string, StringBuilder> _eventLogs = new();
+        private readonly Dictionary<string, EventLog> EventLogs = new();
 
         private void Awake()
         {
@@ -76,7 +76,7 @@ namespace ResearchUtilities
 
         public void CollectEventLogsToFile(string eventName)
         {
-            if (!_eventLogs.ContainsKey(eventName))
+            if (!EventLogs.ContainsKey(eventName))
                 return;
 
             // 修正：直接在DefaultLogFolderPath下新建session子文件夹
@@ -90,7 +90,7 @@ namespace ResearchUtilities
             using (var writer = new System.IO.StreamWriter(outFile, false, Encoding.UTF8))
             {
                 writer.WriteLine("Timestamp,LogContent");
-                string[] lines = _eventLogs[eventName].ToString().Split('\n');
+                string[] lines = EventLogs[eventName].ToString().Split('\n');
                 foreach (var line in lines)
                 {
                     if (string.IsNullOrWhiteSpace(line)) continue;
@@ -101,10 +101,18 @@ namespace ResearchUtilities
 
         public void CollectAllEventLogsToFile()
         {
-            foreach (string eventName in _eventLogs.Keys)
+            foreach (string eventName in EventLogs.Keys)
             {
                 CollectEventLogsToFile(eventName);
             }
+        }
+        
+        
+        public void SetEventLogHeader(string eventName, params string[] headers)
+        {
+            if (!EventLogs.ContainsKey(eventName))
+                EventLogs.Add(eventName, new EventLog());
+            EventLogs[eventName].HeaderContent = "Timestamp, " + string.Join(", ", headers) + "\n";
         }
 
         public void RecordEvent(string eventName, params string[] logContents)
@@ -112,11 +120,11 @@ namespace ResearchUtilities
             DateTime now = _startTime.Add(_stopwatch.Elapsed);
             string timestamp = now.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
-            if (!_eventLogs.ContainsKey(eventName))
-                _eventLogs.Add(eventName, new StringBuilder());
+            if (!EventLogs.ContainsKey(eventName))
+                EventLogs.Add(eventName, new EventLog());
 
             string logContent = string.Join(", ", logContents);
-            _eventLogs[eventName].Append($"UTC {timestamp}, {logContent}\n");
+            EventLogs[eventName].ContentBuilder.Append($"UTC {timestamp}, {logContent}\n");
         }
 
         public void SpecifyLogFilePath(string filePath)

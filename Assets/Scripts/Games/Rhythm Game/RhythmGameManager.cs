@@ -1,5 +1,8 @@
 ﻿using System;
+using ResearchUtilities;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Games.Rhythm_Game
 {
@@ -16,20 +19,71 @@ namespace Games.Rhythm_Game
         {
             CurrentTrack = FindObjectOfType<RhythmGameTrack>();
             Instance = this;
+
+            EventCollector.Instance.SetEventLogHeader("Input Result", "Note Type", "Left Accumulated Time",
+                "Right Accumulated Time", "Rest Time");
         }
 
         private void Update()
         {
+            //if (Input.GetMouseButton((int)MouseButton.LeftMouse))
             if (Input.GetKey(KeyCode.LeftArrow))
+            {
                 CurrentTrack.AccumulateControlInput(NoteType.Left, Time.deltaTime);
+                
+                print("left");
+            }
+
+            //if (Input.GetMouseButton((int)MouseButton.RightMouse))
             if (Input.GetKey(KeyCode.RightArrow))
+            {
                 CurrentTrack.AccumulateControlInput(NoteType.Right, Time.deltaTime);
+                print("right");
+            }
 
         }
 
         public void LoadTrack(string trackName)
         {
             var trackPrefab = Resources.Load<RhythmGameTrack>($"RhythmGame/Tracks/{trackName}");
+        }
+
+        public void OnNoteFulfilled(NoteType noteType)
+        {
+            var leftTime = CurrentTrack.leftDetector.timeAccumulation;
+            var rightTime = CurrentTrack.rightDetector.timeAccumulation;
+            var restTime = CurrentTrack.SecondPerMove - leftTime - rightTime;
+
+            EventCollector.Instance.RecordEvent(
+                "RhythmGame",
+                "Correct",
+                noteType.ToString(),
+                leftTime.ToString(),
+                rightTime.ToString(),
+                restTime.ToString()
+            );
+        }
+        
+        public void OnNoteNotFulfilled(NoteType noteType)
+        {
+            var leftTime = CurrentTrack.leftDetector.timeAccumulation;
+            var rightTime = CurrentTrack.rightDetector.timeAccumulation;
+            var restTime = CurrentTrack.SecondPerMove - leftTime - rightTime;
+
+            EventCollector.Instance.RecordEvent(
+                "RhythmGame",
+                "Incorrect",
+                noteType.ToString(),
+                leftTime.ToString(),
+                rightTime.ToString(),
+                restTime.ToString()
+            );
+        }
+
+        public void TrackEnded()
+        {
+            EditorApplication.isPlaying = false;
+            EventCollector.Instance.CollectEventLogsToFile("RhythmGame");
         }
     }
 }

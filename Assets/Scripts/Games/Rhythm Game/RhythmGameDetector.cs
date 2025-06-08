@@ -16,11 +16,25 @@ namespace Games.Rhythm_Game
         {
             _currentTrack = transform.parent.parent.GetComponent<RhythmGameTrack>();
         }
+        
+        public void ClearCurrentNote()
+        {
+            _currentNote = null;
+        }
 
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            _currentNote = other.GetComponent<RhythmGameNote>();
+            var note = other.GetComponent<RhythmGameNote>();
+
+            if (note.Type == NoteType.Terminator)
+            {
+                RhythmGameManager.Instance.TrackEnded();
+                note.gameObject.SetActive(false);
+                return;
+            }
+            
+            _currentNote = note;
             _currentNote.VisualRepresentation.color = Color.white * .8f;
         }
     }
