@@ -30,12 +30,12 @@ namespace HideNSeek{
         void FixedUpdate()
         {
             //player enters left
-            if(PlayerCtrl.inst.transform.position.x<=-boundX){
+            if(PlayerCtrl.inst.transform.position.x<=-boundX&&onTheLeft){
                 if(delayReappearCoro!=null)
                     OnRoundEnd(onTheLeft);
             }
             //player enters right
-            else if(PlayerCtrl.inst.transform.position.x>=boundX){
+            else if(PlayerCtrl.inst.transform.position.x>=boundX&&!onTheLeft){
                 if(delayReappearCoro!=null)
                     OnRoundEnd(!onTheLeft);
             }
