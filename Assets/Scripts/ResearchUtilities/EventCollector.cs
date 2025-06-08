@@ -89,8 +89,8 @@ namespace ResearchUtilities
             string outFile = System.IO.Path.Combine(directory, eventName + ".csv");
             using (var writer = new System.IO.StreamWriter(outFile, false, Encoding.UTF8))
             {
-                writer.WriteLine("Timestamp,LogContent");
-                string[] lines = EventLogs[eventName].ToString().Split('\n');
+                writer.WriteLine(EventLogs[eventName].HeaderContent);
+                string[] lines = EventLogs[eventName].ContentBuilder.ToString().Split('\n');
                 foreach (var line in lines)
                 {
                     if (string.IsNullOrWhiteSpace(line)) continue;
@@ -112,7 +112,7 @@ namespace ResearchUtilities
         {
             if (!EventLogs.ContainsKey(eventName))
                 EventLogs.Add(eventName, new EventLog());
-            EventLogs[eventName].HeaderContent = "Timestamp, " + string.Join(", ", headers) + "\n";
+            EventLogs[eventName].HeaderContent = "Timestamp, " + string.Join(", ", headers);
         }
 
         public void RecordEvent(string eventName, params string[] logContents)

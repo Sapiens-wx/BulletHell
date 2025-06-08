@@ -51,6 +51,8 @@ namespace Games.Rhythm_Game
         {
             if (_isMoving)
                 return;
+
+            RhythmGameManager.Instance.CurrentMoveStartTime = Time.time;
             
             
             if (leftDetector._currentNote != null)

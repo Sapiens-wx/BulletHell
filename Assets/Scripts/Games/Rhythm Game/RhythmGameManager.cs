@@ -13,6 +13,7 @@ namespace Games.Rhythm_Game
         
         [SerializeField] private float correctNoteThreshold = 0.5f;
         public float CorrectNoteThreshold => correctNoteThreshold;
+        public float CurrentMoveStartTime;
 
 
         private void Start()
@@ -20,7 +21,7 @@ namespace Games.Rhythm_Game
             CurrentTrack = FindObjectOfType<RhythmGameTrack>();
             Instance = this;
 
-            EventCollector.Instance.SetEventLogHeader("Input Result", "Note Type", "Left Accumulated Time",
+            EventCollector.Instance.SetEventLogHeader("RhythmGame","Input Result", "Note Type", "Left Accumulated Time",
                 "Right Accumulated Time", "Rest Time");
         }
 
@@ -52,7 +53,7 @@ namespace Games.Rhythm_Game
         {
             var leftTime = CurrentTrack.leftDetector.timeAccumulation;
             var rightTime = CurrentTrack.rightDetector.timeAccumulation;
-            var restTime = CurrentTrack.SecondPerMove - leftTime - rightTime;
+            var restTime = Time.time - CurrentMoveStartTime - leftTime - rightTime;
 
             EventCollector.Instance.RecordEvent(
                 "RhythmGame",
@@ -82,8 +83,8 @@ namespace Games.Rhythm_Game
 
         public void TrackEnded()
         {
-            EditorApplication.isPlaying = false;
             EventCollector.Instance.CollectEventLogsToFile("RhythmGame");
+            EditorApplication.isPlaying = false;
         }
     }
 }
