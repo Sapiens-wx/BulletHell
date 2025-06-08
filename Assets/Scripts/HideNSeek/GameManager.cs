@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace HideNSeek{
-    public class HideAndSeekManager : Singleton<HideAndSeekManager>
+    public class GameManager : Singleton<GameManager>
     {
         public Animator leftKid, rightKid;
         public float boundX;
@@ -48,9 +48,11 @@ namespace HideNSeek{
             onRoundBegin?.Invoke(Time.time, onTheLeft?0:1);
             //send message to predict.py
             //Communicator.inst.SendMessage(new byte[]{(byte)(onTheLeft?0:1)});
+            ScoreRecorder.inst.BeginRound();
         }
         public void OnRoundEnd(bool success){
             onRoundEnd?.Invoke(success);
+            ScoreRecorder.inst.EndRound(success);
             if(delayReappearCoro!=null){
                 StopCoroutine(delayReappearCoro);
                 delayReappearCoro=null;
@@ -67,7 +69,7 @@ namespace HideNSeek{
             OnRoundEnd(false);
         }
         IEnumerator Reappear(){
-            yield return new WaitForSeconds(HideAndSeekManager.inst.restInterval);
+            yield return new WaitForSeconds(GameManager.inst.restInterval);
             Appear();
         }
     }
