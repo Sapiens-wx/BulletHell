@@ -5,6 +5,7 @@ namespace HideNSeek{
     public class PlayerCtrl : Singleton<PlayerCtrl>
     {
         public float walkDuration; //amount of time it takes to walk from 0 to GameManager.inst.boundX
+        public bool correctMovement;
         [Header("Animation")]
         public float maxShrinkYScale;
         public Transform eyes,spr;
@@ -32,9 +33,9 @@ namespace HideNSeek{
         {
             if(!isAtRest){
                 int key=(int)Input.GetAxisRaw("Horizontal");
-                if(key!=0) inputX=key;
+                inputX = key;
                 //if the player direction is not the same as the kid's direction
-                if(GameManager.inst.onTheLeft!=(inputX<=0))
+                if(correctMovement&&GameManager.inst.onTheLeft!=(inputX<=0))
                     inputX=0;
                 if(inputX>0&&transform.position.x<=GameManager.inst.boundX)
                     transform.position+=new Vector3(delta_x,0,0);

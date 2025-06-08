@@ -39,7 +39,7 @@ public class ScoreRecorder : Singleton<ScoreRecorder>{
         formulaScore_sum+=maxDist*v_bar;
         formulaScore=formulaScore_sum/round;
         text_score.text="Score/Rounds: "+score.ToString("0")+"/"+round.ToString();
-        text_score.text=$"Score/Rounds: {score.ToString("0")}/{round}\nFormula Score: {formulaScore}";
+        text_score.text=$"Score/Rounds: {score.ToString("0")}/{round}\nAverage Formula Score: {formulaScore}";
         EventCollector.Instance.RecordEvent($"Round Results", $"Round {round}: {text_score.text}");
     }
 }
