@@ -57,7 +57,7 @@ namespace Games.Rhythm_Game
 
             EventCollector.Instance.RecordEvent(
                 "RhythmGame",
-                "Correct",
+                "True",
                 noteType.ToString(),
                 leftTime.ToString(),
                 rightTime.ToString(),
@@ -73,7 +73,7 @@ namespace Games.Rhythm_Game
 
             EventCollector.Instance.RecordEvent(
                 "RhythmGame",
-                "Incorrect",
+                "False",
                 noteType.ToString(),
                 leftTime.ToString(),
                 rightTime.ToString(),
