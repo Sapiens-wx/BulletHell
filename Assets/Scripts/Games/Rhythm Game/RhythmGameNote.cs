@@ -8,8 +8,12 @@ namespace Games.Rhythm_Game
         [SerializeField] private SpriteRenderer visualRepresentation;
         public SpriteRenderer VisualRepresentation => visualRepresentation;
         [SerializeField] private NoteType type;
+
+        [SerializeField] private int pointWorth = 100;
+        public int PointWorth => pointWorth;
         
         public NoteType Type => type;
+        private bool _isFulfilled;
 
         private void Start()
         {
@@ -26,6 +30,20 @@ namespace Games.Rhythm_Game
                     break;
             }
             
+        }
+        
+
+        private void Update()
+        {
+            if (_isFulfilled)
+            {
+                var cur = visualRepresentation.color;
+                cur.a -= 1 / RhythmGameManager.Instance.NoteFadeDuration * Time.deltaTime;
+                if (cur.a <= 0)
+                    Destroy(gameObject);
+                transform.localScale = Vector3.one * Mathf.Lerp(transform.localScale.x,RhythmGameManager.Instance.NoteFadeZoomRatio,0.5f);
+                visualRepresentation.color = cur;
+            }
         }
 
         private void OnValidate()
@@ -52,6 +70,13 @@ namespace Games.Rhythm_Game
             }
 
 
+        }
+        
+        
+        public void OnInputFulfilled()
+        {
+            transform.parent = transform.parent.parent; // unparent from the notes
+            _isFulfilled = true;
         }
     }
 }

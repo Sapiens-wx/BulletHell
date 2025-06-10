@@ -20,6 +20,17 @@ namespace Games.Rhythm_Game
         public float BeatsPerMove => beatsPerMove;
         public float SecondPerMove => beatsPerMove / bpm * 60f;
         private float _moveCounter;
+        [SerializeField] private string trackName;
+        public string TrackName => trackName;
+
+        public int MaxScore {get; private set;}
+        public int MaxCombo {get; private set;}
+        
+        private void Start()
+        {
+            MaxCombo = notesParent.childCount - 1; // Terminator note is not counted
+            MaxScore = MaxCombo * 100; // Assuming each note gives 100 points
+        }
 
 
         private void Update()
@@ -89,7 +100,7 @@ namespace Games.Rhythm_Game
         private void OnNoteInputFulfilled(RhythmGameDetector detector)
         {
             RhythmGameManager.Instance.OnNoteFulfilled(detector._currentNote.Type);
-            Destroy(detector._currentNote.gameObject);
+            detector._currentNote.OnInputFulfilled();
             detector.ClearCurrentNote();
         }
     }

@@ -12,15 +12,17 @@ namespace Games.Rhythm_Game
         private RhythmGameTrack _currentTrack;
         public float timeAccumulation;
 
+
         private void Start()
         {
             _currentTrack = transform.parent.parent.GetComponent<RhythmGameTrack>();
         }
-        
+
         public void ClearCurrentNote()
         {
             _currentNote = null;
         }
+
 
 
         private void OnTriggerEnter2D(Collider2D other)
