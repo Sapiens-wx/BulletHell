@@ -8,6 +8,9 @@ public class Snake : MonoBehaviour
     public GameObject bodyPrefab;
     public GameObject tailPrefab;
 
+    private Vector2 minViewport;
+    private Vector2 maxViewport;
+
     private Vector2 direction = Vector2.right;
     private float timer;
 
@@ -40,6 +43,10 @@ public class Snake : MonoBehaviour
         //v_i
         lastPosition = transform.position;
 
+        //camera 边界
+        minViewport = Camera.main.ViewportToWorldPoint(Vector2.zero);
+        maxViewport = Camera.main.ViewportToWorldPoint(Vector2.one);
+
     }
 
     void Update()
@@ -60,6 +67,7 @@ public class Snake : MonoBehaviour
         if (timer >= moveSpeed)
         {
             Move();
+            CheckBoundaryAndReflect();
             timer = 0f;
         }
 
@@ -152,6 +160,32 @@ public class Snake : MonoBehaviour
             tail.rotation = Quaternion.Euler(0, 0, 90);
     }
 
+    void CheckBoundaryAndReflect()
+    {
+        Vector2 headPos = transform.position;
+        bool reflected = false;
+
+        if (headPos.x < minViewport.x || headPos.x > maxViewport.x)
+        {
+            direction = new Vector2(-direction.x, direction.y);
+            reflected = true;
+        }
+
+        if (headPos.y < minViewport.y || headPos.y > maxViewport.y)
+        {
+            direction = new Vector2(direction.x, -direction.y);
+            reflected = true;
+        }
+
+        if (reflected)
+        {
+            transform.position = new Vector3(
+                Mathf.Clamp(headPos.x, minViewport.x, maxViewport.x),
+                Mathf.Clamp(headPos.y, minViewport.y, maxViewport.y),
+                0f
+            );
+        }
+    }
 
     public void Grow()
     {
