@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using UnityEngine;
-
 public class FoodSpawner : MonoBehaviour
 {
     public GameObject foodPrefab;
@@ -41,5 +39,15 @@ public class FoodSpawner : MonoBehaviour
         while (Vector2.Distance(spawnPosition, snakeHead.position) < 1f && attempts < maxAttempts);
 
         currentFood = Instantiate(foodPrefab, spawnPosition, Quaternion.identity);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            other.GetComponent<Snake>().Grow();
+            FindObjectOfType<FoodSpawner>().SpawnFood();
+            Destroy(gameObject);
+        }
     }
 }

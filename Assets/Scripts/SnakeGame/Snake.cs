@@ -8,6 +8,8 @@ public class Snake : MonoBehaviour
     public GameObject bodyPrefab;
     public GameObject tailPrefab;
 
+    public static Snake Instance;
+
     private Vector2 minViewport;
     private Vector2 maxViewport;
 
@@ -46,6 +48,8 @@ public class Snake : MonoBehaviour
         //camera 边界
         minViewport = Camera.main.ViewportToWorldPoint(Vector2.zero);
         maxViewport = Camera.main.ViewportToWorldPoint(Vector2.one);
+
+        Instance = this;
 
     }
 
@@ -215,6 +219,11 @@ public class Snake : MonoBehaviour
         float s_norm = 1f - Mathf.Clamp01(s_avg / maxSwitch);
 
         return f_norm * v_norm * s_norm;
+    }
+
+    public Vector2 GetDirection()
+    {
+        return direction;
     }
 }
 
