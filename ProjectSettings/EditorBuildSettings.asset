@@ -6,6 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Meteorite.unity
-    guid: 8c9cfa26abfee488c85f1582747f6a02
+    path: Assets/Scenes/Games/HideNSeek.unity
+    guid: c9a9393d67d198442a7b98d805f1e95d
+  - enabled: 1
+    path: Assets/Scenes/Games/RhythmGame.unity
+    guid: 161b32827f2cc4f42ae78c0b8a7889eb
+  - enabled: 1
+    path: Assets/Scenes/Games/SnakeGame.unity
+    guid: 30d386183cca14e4ca150349201569bd
+  - enabled: 1
+    path: Assets/Scenes/Title.unity
+    guid: 99da86c54acf17242b64d5ade8278769
   m_configObjects: {}
