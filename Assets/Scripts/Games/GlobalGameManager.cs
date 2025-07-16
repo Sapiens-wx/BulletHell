@@ -10,6 +10,12 @@ namespace Games
 
         private void Awake()
         {
+            if (Instance)
+            {
+                Destroy(this);
+                return;
+            }
+
             Instance = this;
         }
 
