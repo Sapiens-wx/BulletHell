@@ -1,3 +1,4 @@
+using TMPro;
 using System.Collections;
 using UnityEngine;
 
@@ -9,11 +10,34 @@ public class ArrowSequenceController : MonoBehaviour
     public GameObject confirmButton;
     public GameObject finishButton;
 
-    public int repeatsPerPhase = 1;
+    public GameObject settingsPanel;
+    public TMP_InputField repeatInputField;
+    public TMP_InputField switchCountInputField;
+
+    private int repeatsPerPhase = 5;
+    private int switchesPerRepeat = 60;
     private bool isConfirmed = false;
 
-    private void Start()
+    public void OnStartPressed()
     {
+        if (!int.TryParse(repeatInputField.text, out repeatsPerPhase))
+        {
+            repeatsPerPhase = 5;
+        }
+
+        // Parse switch count
+        if (!int.TryParse(switchCountInputField.text, out switchesPerRepeat))
+        {
+            switchesPerRepeat = 60;
+        }
+
+        if (settingsPanel != null)
+            settingsPanel.SetActive(false);
+
+        //here is where I should start running the python script
+        //StartPythonScript();
+
+        //start training
         StartCoroutine(RunAllPhases());
     }
 
@@ -51,8 +75,7 @@ public class ArrowSequenceController : MonoBehaviour
         {
             Debug.Log($"Running repeat {repeat + 1}/{repeatsPerPhase} for {phaseName}");
 
-            // 执行 60 秒，每秒切换一次
-            for (int i = 0; i < 60; i++)
+            for (int i = 0; i < switchesPerRepeat; i++)
             {
                 toggleAction.Invoke();
                 yield return new WaitForSeconds(1f);
@@ -73,7 +96,6 @@ public class ArrowSequenceController : MonoBehaviour
         Debug.Log("Finished Phase: " + phaseName);
     }
 
-    // 这个方法会在按钮上绑定
     public void OnConfirmPressed()
     {
         isConfirmed = true;
@@ -105,5 +127,4 @@ public class ArrowSequenceController : MonoBehaviour
         middleArrow.GetComponent<SpriteRenderer>().color = Color.white;
         rightArrow.GetComponent<SpriteRenderer>().color = Color.white;
     }
-
 }
