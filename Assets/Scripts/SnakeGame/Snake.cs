@@ -94,16 +94,16 @@ public class Snake : MonoBehaviour
     {
         Vector2 newDirection = direction;
 
-        if (Input.GetKeyDown(KeyCode.W) && direction != Vector2.down)
-            newDirection = Vector2.up;
-        else if (Input.GetKeyDown(KeyCode.S) && direction != Vector2.up)
-            newDirection = Vector2.down;
-        else if (Input.GetKeyDown(KeyCode.A) && direction != Vector2.right)
-            newDirection = Vector2.left;
-        else if (Input.GetKeyDown(KeyCode.D) && direction != Vector2.left)
-            newDirection = Vector2.right;
+        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) // 向左转
+        {
+            newDirection = new Vector2(-direction.y, direction.x);
+        }
+        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) // 向右转
+        {
+            newDirection = new Vector2(direction.y, -direction.x);
+        }
 
-        //s_i, num of switches
+        // s_i, num of switches
         if (newDirection != direction)
         {
             direction = newDirection;
