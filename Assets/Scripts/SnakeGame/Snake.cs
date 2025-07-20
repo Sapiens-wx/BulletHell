@@ -42,6 +42,8 @@ public class Snake : MonoBehaviour
         tail.position = transform.position - new Vector3(1, 0, 0); // 初始方向向右
         tail.rotation = Quaternion.Euler(0, 0, 90);
 
+        transform.rotation = Quaternion.Euler(0, 0, 90);
+
         //v_i
         lastPosition = transform.position;
 
@@ -97,10 +99,12 @@ public class Snake : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) // 向左转
         {
             newDirection = new Vector2(-direction.y, direction.x);
+            transform.Rotate(0, 0, 90);
         }
         else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) // 向右转
         {
             newDirection = new Vector2(direction.y, -direction.x);
+            transform.Rotate(0, 0, -90);
         }
 
         // s_i, num of switches
@@ -183,6 +187,10 @@ public class Snake : MonoBehaviour
 
         if (reflected)
         {
+            currentSwitchCount++;
+            totalSwitches++;
+            transform.Rotate(0, 0, 180);
+
             transform.position = new Vector3(
                 Mathf.Clamp(headPos.x, minViewport.x, maxViewport.x),
                 Mathf.Clamp(headPos.y, minViewport.y, maxViewport.y),
