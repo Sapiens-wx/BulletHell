@@ -10,9 +10,20 @@ using Debug = UnityEngine.Debug;
 namespace ResearchUtilities.Muse
 {
     [RequireComponent(typeof(MuseEEGFileRecorder))]
-    public class MuseLSLEEGManager : MonoBehaviour
+    public class MuseLslManager : MonoBehaviour
     {
-        public static MuseLSLEEGManager Instance { get; private set; }
+        public static MuseLslManager Instance { get; private set; }
+
+        public static void GetOrCreateInstance(out MuseLslManager instance)
+        {
+            instance = Instance;
+            if (instance)
+                return;
+            var go = new GameObject("MuseLslManager");
+            instance = go.AddComponent<MuseLslManager>();
+            go.AddComponent<MuseEEGFileRecorder>();
+            return;
+        }
         
         private StreamInlet _inlet;
         public bool IsConnected => _inlet != null;
@@ -30,11 +41,15 @@ namespace ResearchUtilities.Muse
             Instance = this;
             _samplesBuffer = new ShadowWrappedBuffer<MuseEEGSample>(SAMPLE_RATE * bufferTimeSeconds);
             EstablishConnection();
+            
+            DontDestroyOnLoad(gameObject);
         }
 
         private void Start()
         {
             _fileRecorder = GetComponent<MuseEEGFileRecorder>();
+            if (!_fileRecorder)
+                gameObject.AddComponent<MuseEEGFileRecorder>();
         }
 
         private void Update()
@@ -65,8 +80,6 @@ namespace ResearchUtilities.Muse
                 return false;
             }
         }
-
-        
         
 
         private void OnDestroy()
