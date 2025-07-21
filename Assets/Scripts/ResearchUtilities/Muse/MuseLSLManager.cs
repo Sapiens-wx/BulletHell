@@ -32,7 +32,7 @@ namespace ResearchUtilities.Muse
         private const int SAMPLE_RATE = 256;
         [SerializeField] private int bufferTimeSeconds = 2;
         
-        private MuseEEGFileRecorder _fileRecorder;
+        public MuseEEGFileRecorder FileRecorder { get; private set; }
 
         private void Awake()
         {
@@ -47,8 +47,8 @@ namespace ResearchUtilities.Muse
 
         private void Start()
         {
-            _fileRecorder = GetComponent<MuseEEGFileRecorder>();
-            if (!_fileRecorder)
+            FileRecorder = GetComponent<MuseEEGFileRecorder>();
+            if (!FileRecorder)
                 gameObject.AddComponent<MuseEEGFileRecorder>();
         }
 
