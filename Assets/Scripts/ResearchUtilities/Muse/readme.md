@@ -25,7 +25,7 @@ This folder contains core scripts for handling Muse EEG data streaming and recor
   - Supports timed and untimed recording, buffer management, and efficient file writing strategy.
 - **Key Public Members:**
   - (Most methods are internal/private and managed by Unity lifecycle.)
-  - Recording is controlled via methods like `StartRecording` and `StopRecording` (exposed as needed). If duration is less than 0, it will record until `StopRecording` is called.
+  - Recording is controlled via methods like `TryStartRecording` and `StopRecording` (exposed as needed). If duration is less than 0, it will record until `StopRecording` is called.
   - Default file path is set to `Application.persistentDataPath` with a timestamped filename. If you want to have a specified name, you will have to make sure that is unique or the recording will not start. This is to prevent unexpected overwriting of files.
 - **Notice**
   - The `MuseEEGFileRecorder` is designed to be used in conjunction with `MuseLslManager`.
@@ -33,7 +33,7 @@ This folder contains core scripts for handling Muse EEG data streaming and recor
 
 ## Usage
 1. Add `MuseLslManager` to your Unity scene (or call `GetOrCreateInstance` to make sure there exist one).
-2. Use `MuseEEGFileRecorder` to record EEG data to disk. You can access it by `MuseLslManager.Instance.FileRecorder` Recording can be started/stopped programmatically.
+2. Use `MuseEEGFileRecorder` to record EEG data to disk. You can access it by `MuseLslManager.Instance.FileRecorder` Recording can be started/stopped programmatically with `TryStartRecording` and `StopRecording`.
 3. All data is written in CSV format for easy analysis.
 
 ## Dependencies
