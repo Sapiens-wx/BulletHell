@@ -90,9 +90,9 @@ namespace Games.Rhythm_Game
                 NoteType.Right => rightDetector,
                 _ => throw new ArgumentOutOfRangeException(nameof(noteType), noteType, null)
             };
+            detector.timeAccumulation += deltaTime;
             if (!detector._currentNote)
                 return;
-            detector.timeAccumulation += deltaTime;
             if (detector.timeAccumulation >= SecondPerMove * RhythmGameManager.Instance.CorrectNoteThreshold)
                 OnNoteInputFulfilled(detector);
         }

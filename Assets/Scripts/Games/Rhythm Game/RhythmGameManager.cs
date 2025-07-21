@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using ResearchUtilities;
 using TMPro;
 using UnityEditor;
@@ -22,6 +24,7 @@ namespace Games.Rhythm_Game
         [SerializeField] private TextMeshProUGUI ComboCounterText;
         [SerializeField] private TextMeshProUGUI ComboText;
         [SerializeField] private TextMeshProUGUI ScoreText;
+        [SerializeField] private TextMeshProUGUI FormulaScoreText;
         
         [SerializeField] private float noteFadeDuration = 0.5f;
         public float NoteFadeDuration => noteFadeDuration;
@@ -32,8 +35,6 @@ namespace Games.Rhythm_Game
         [SerializeField] private RhythmGameClearUIHandler clearUIHandler;
         [SerializeField] private float clearUIMoveInDuration = 1f;
         public float ClearUIMoveInDuration => clearUIMoveInDuration;
-        
-        
 
 
         private void Start()
@@ -49,6 +50,7 @@ namespace Games.Rhythm_Game
             ScoreText.text = "0";
             
             _maxComboCounter = 0;
+            FormulaScoreText.text = $"FormulaScore: --";
             
         }
 
@@ -58,15 +60,12 @@ namespace Games.Rhythm_Game
             if (Input.GetKey(KeyCode.LeftArrow))
             {
                 CurrentTrack.AccumulateControlInput(NoteType.Left, Time.deltaTime);
-                
-                print("left");
             }
 
             //if (Input.GetMouseButton((int)MouseButton.RightMouse))
             if (Input.GetKey(KeyCode.RightArrow))
             {
                 CurrentTrack.AccumulateControlInput(NoteType.Right, Time.deltaTime);
-                print("right");
             }
 
         }
@@ -85,6 +84,19 @@ namespace Games.Rhythm_Game
             var leftTime = CurrentTrack.leftDetector.timeAccumulation;
             var rightTime = CurrentTrack.rightDetector.timeAccumulation;
             var restTime = Time.time - CurrentMoveStartTime - leftTime - rightTime;
+            
+            float correctTime = noteType switch
+            {
+                NoteType.Left => leftTime,
+                NoteType.Right => rightTime,
+                _ => 0f
+            };
+            float incorrectTime = noteType switch
+            {
+                NoteType.Left => rightTime,
+                NoteType.Right => leftTime,
+                _ => 0f
+            };
 
             EventCollector.Instance.RecordEvent(
                 "RhythmGame",
@@ -101,6 +113,8 @@ namespace Games.Rhythm_Game
             ScoreText.text = _score.ToString();
             ComboText.text = "Combo";
             _maxComboCounter = Mathf.Max(_maxComboCounter, _comboCounter);
+            
+            AddFormulaScoreCoefficient(true, correctTime, incorrectTime, restTime, CurrentTrack.SecondPerMove);
         }
         
         public void OnNoteNotFulfilled(NoteType noteType)
@@ -121,6 +135,8 @@ namespace Games.Rhythm_Game
             _comboCounter = 0;
             ComboCounterText.text = "";
             ComboText.text = "";
+            
+            AddFormulaScoreCoefficient(false, 0, 0, 0,0);
         }
 
         public void TrackEnded()
@@ -160,5 +176,26 @@ namespace Games.Rhythm_Game
                 return "D";
             }
         }
+
+        #region Formula Score Calculation
+
+        private float _formulaScore => _formulaScoreCoefficients.Average();
+        private List<float> _formulaScoreCoefficients = new();
+
+        private void AddFormulaScoreCoefficient(bool isCorrect,float correctInputTime, float incorrectInputTime, float restTime, float totalTime)
+        {
+            if (!isCorrect)
+            {
+                _formulaScoreCoefficients.Add(correctInputTime);
+                FormulaScoreText.text = $"FormulaScore: {_formulaScore:0.00}";
+                return;
+            }
+            float coefficient = 1 - incorrectInputTime / correctInputTime +
+                                restTime / totalTime;
+            _formulaScoreCoefficients.Add(coefficient);
+            FormulaScoreText.text = $"FormulaScore: {_formulaScore:0.00}";
+        }
+
+        #endregion
     }
 }

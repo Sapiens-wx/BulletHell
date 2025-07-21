@@ -17,6 +17,7 @@ namespace HideNSeek{
         const float maxXSpd=5;
         [NonSerialized][HideInInspector]public float vx;
         public float MoveSpd=>moveSpd;
+        Vector3 startPos;
         // Start is called before the first frame update
         void Start()
         {
@@ -25,7 +26,8 @@ namespace HideNSeek{
             yScale=1;
             moveSpd=GameManager.inst.boundX/walkDuration;
             delta_x=Time.fixedDeltaTime*moveSpd;
-            GameManager.inst.onRoundEnd+=(success)=>{transform.position=Vector3.zero; inputX=0; isAtRest=true;};
+            startPos=transform.position;
+            GameManager.inst.onRoundEnd+=(success)=>{transform.position=startPos; inputX=0; isAtRest=true;};
             GameManager.inst.onRoundBegin+=(time,dir)=>{isAtRest=false;};
         }
 
