@@ -72,5 +72,14 @@ namespace HideNSeek{
             yield return new WaitForSeconds(GameManager.inst.restInterval);
             Appear();
         }
+
+        void OnDestroy()
+        {
+            if (delayReappearCoro != null)
+            {
+                StopCoroutine(delayReappearCoro);
+                delayReappearCoro = null;
+            }
+        }
     }
 }
