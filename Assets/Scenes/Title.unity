@@ -2052,7 +2052,7 @@ MonoBehaviour:
   trainModelButton: {fileID: 1871796436}
   trainModelButtonText: {fileID: 48016037}
   gamePreviewImages:
-  - gameName: Rhythm Game
+  - gameName: RhythmGame
     previewImage: {fileID: 21300000, guid: 44b7477546cde51488355aac37a5018b, type: 3}
     scale: {x: 4, y: 4, z: 4}
   - gameName: HideNSeek
