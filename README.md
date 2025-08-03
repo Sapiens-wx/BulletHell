@@ -31,7 +31,7 @@ __PlayerCtrl.cs__
 ## Fruit-Lover Snake
 ![Game Fruit-Lover Snake](Examples/Game_Snake.jpg)
 - **Objective**: Control the snake to grow by eating fruit while avoiding collisions with itself.
-- **Controls**: Use **W**, **A**, **S**, and **D** to control the snake's movement (up, left, down, right).
+- **Controls**: Use **A** and **D** to control the snake's movement (relative left and right).
 - **Gameplay**:
   - The snake moves automatically.
   - Guide the snake to consume fruit that appears on the screen.
